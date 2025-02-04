@@ -5,17 +5,17 @@ import { NextResponse } from "next/server";
 
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth();
   const user = session?.user;
-  params = await params;
+  const id = (await params).id
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
   const order = await prisma.order.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: { book: true },
   });
 
@@ -27,7 +27,7 @@ export async function PATCH(
   const parsedData = updateOrderSchema.parse(data);
 
   const updatedOrder = await prisma.order.update({
-    where: { id: params.id },
+    where: { id },
     data: { status: parsedData.status },
   });
 
@@ -35,15 +35,15 @@ export async function PATCH(
 }
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth();
   const user = session?.user;
-  params = await params;
+  const id = (await params).id
   if (!user || user.role !== "ADMIN") {
     return NextResponse.json({ error: "Not authorized" }, { status: 403 });
   }
 
-  await prisma.order.delete({ where: { id: params.id } });
+  await prisma.order.delete({ where: { id } });
   return NextResponse.json({ message: "Order deleted successfully" });
 }

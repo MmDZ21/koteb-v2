@@ -6,12 +6,12 @@ import { z } from "zod";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  params = await params;
-  try {
+  const id = (await params).id
+   try {
     const book = await prisma.book.findUnique({
-      where: { id: params.id },
+      where: { id },
     });
     if (!book) {
       return NextResponse.json({ error: "Book not found" }, { status: 404 });
@@ -27,16 +27,16 @@ export async function GET(
 }
 export async function PATCH(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth();
   const user = session?.user;
-  params = await params;
+  const id = (await params).id
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const book = await prisma.book.findUnique({ where: { id: params.id } });
+  const book = await prisma.book.findUnique({ where: { id } });
   if (!book || book.sellerId !== user.id) {
     return NextResponse.json({ error: "Not authorized" }, { status: 403 });
   }
@@ -45,7 +45,7 @@ export async function PATCH(
     const parsedData = updateBookSchema.parse(data);
 
     const updatedBook = await prisma.book.update({
-      where: { id: params.id },
+      where: { id },
       data: parsedData,
     });
     return NextResponse.json(updatedBook);
@@ -62,22 +62,22 @@ export async function PATCH(
 
 export async function DELETE(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const session = await auth();
   const user = session?.user;
-  params = await params;
+  const id = (await params).id
   if (!user) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  const book = await prisma.book.findUnique({ where: { id: params.id } });
+  const book = await prisma.book.findUnique({ where: { id } });
   if (!book || book.sellerId !== user.id) {
     return NextResponse.json({ error: "Not authorized" }, { status: 403 });
   }
   try {
     await prisma.book.delete({
-      where: { id: params.id },
+      where: { id },
     });
     return NextResponse.json({ message: "Book deleted successfully" });
   } catch (error) {
