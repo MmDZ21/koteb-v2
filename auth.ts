@@ -20,25 +20,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
       authorize: async (credentials) => {
         try {
+          let user = null
           const { email, password } = await signInSchema.parseAsync(
             credentials
           );
 
           // Look up the user in the database
-          const user = await prisma.user.findUnique({
+          user = await prisma.user.findUnique({
             where: { email },
           });
 
           // If no user is found or the password is incorrect, return null
           if (!user) {
-            console.error("User not found");
-            return null;
+            throw new Error("Invalid credentials.")
           }
 
           const isPasswordValid = await verifyPassword(password, user.password);
           if (!isPasswordValid) {
-            console.error("Invalid password");
-            return null;
+            throw new Error("Invalid credentials.")
           }
 
           // Return the user object if valid

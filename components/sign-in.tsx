@@ -1,13 +1,10 @@
-import { signIn } from "@/auth";
+import login from "@/actions/login";
+
 
 export function SignIn() {
   return (
     <form
-      action={async (formData) => {
-        "use server";
-        formData.append('redirectTo', '/dashboard');
-        await signIn("credentials", formData);
-      }}
+      action={login}
     >
       <label>
         Email
