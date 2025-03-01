@@ -14,6 +14,7 @@ export const signInSchema = z.object({
 export const createBookSchema = z.object({
   title: z.string().min(1),
   author: z.string().min(1),
+  image:z.string(),
   condition: z.enum(["NEW", "GOOD", "FAIR", "POOR"]),
   price: z.number().positive(),
   isbn: z.string().min(10).max(13),
