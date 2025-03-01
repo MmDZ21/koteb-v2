@@ -1,20 +1,16 @@
-import bcrypt from "bcryptjs";
+import { randomBytes, pbkdf2Sync } from "crypto";
 
-export async function saltAndHashPassword(password: string) {
-  const saltRounds = 10; // Adjust the cost factor according to your security requirements
-  const salt = bcrypt.genSaltSync(saltRounds); // Synchronously generate a salt
-  const hash = bcrypt.hashSync(password, salt); // Synchronously hash the password
-  return hash; // Return the hash directly as a string
+export async function saltAndHashPassword(password: string): Promise<string> {
+  const salt = randomBytes(16).toString("hex");
+  const hash = pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`);
+  return `${salt}:${hash}`;
 }
 
 export const verifyPassword = async (
   password: string,
   hashedPassword: string
 ): Promise<boolean> => {
-  try {
-    return await bcrypt.compare(password, hashedPassword);
-  } catch (error) {
-    console.error("Password verification error:", error);
-    return false;
-  }
+  const [salt, originalHash] = hashedPassword.split(":");
+  const hash = pbkdf2Sync(password, salt, 1000, 64, `sha512`).toString(`hex`);
+  return hash === originalHash;
 };
