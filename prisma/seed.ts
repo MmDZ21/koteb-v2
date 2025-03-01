@@ -1,4 +1,4 @@
-import { saltAndHashPassword } from "../utils/password";
+import { saltAndHashPassword } from "@/auth";
 import { PrismaClient, Role, Condition, BookStatus, OrderStatus } from "@prisma/client";
 
 const prisma = new PrismaClient();
