@@ -33,6 +33,7 @@ model Book {
   id        String     @id @default(uuid())
   status    BookStatus @default(PENDING)
   title     String
+  image     String
   author    String
   condition Condition
   price     Float

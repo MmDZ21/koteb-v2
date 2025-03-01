@@ -1,4 +1,5 @@
 import Header from "@/components/layout/header/Header";
+import MobileNav from "@/components/layout/Navbar/MobileNav";
 
 export default function MainLayout({
   children,
@@ -10,6 +11,7 @@ export default function MainLayout({
       <Header />
       <main>{children}</main>
       {/* <MobileNav /> */}
+      <MobileNav />
     </div>
   );
 }

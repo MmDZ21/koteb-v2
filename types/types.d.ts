@@ -17,3 +17,20 @@ declare module "next-auth/jwt" {
     role: "USER" | "ADMIN";
   }
 }
+
+export type IconProps = React.SVGProps<SVGSVGElement>;
+
+export interface MobileNavItem {
+  label: string;
+  href: string;
+  icon: React.ForwardRefExoticComponent<Omit<IconProps, "ref"> & React.RefAttributes<SVGSVGElement>>
+  large: boolean
+}
+
+export interface Condition {
+  value:"ALL" | "NEW" | "GOOD" | "FAIR";
+  label: string;
+  icon:  React.ForwardRefExoticComponent<
+  Omit<IconProps, "ref"> & React.RefAttributes<SVGSVGElement>
+>;
+}

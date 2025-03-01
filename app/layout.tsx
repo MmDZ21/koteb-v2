@@ -1,8 +1,24 @@
 import type { Metadata } from "next";
 // import localFont from "next/font/local";
 import "./globals.css";
+import localFont from 'next/font/local'
 
-
+const iransans = localFont({
+  src: [
+    {
+      path: './fonts/IranSansRegular.ttf',
+      weight: '100 500',
+      style: 'normal',
+    },
+    {
+      path: './fonts/IranSansBold.ttf',
+      weight: '600 900',
+      style: 'normal',
+    },
+  ],
+  display: "swap",
+  fallback: ["system-ui", "arial"],
+})
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,7 +33,7 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl">
       <body
-        className="bg-background antialiased"
+        className={`antialiased ${iransans.className}`}
       >
           {children}
       </body>
